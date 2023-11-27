@@ -31,7 +31,7 @@ metadata:
   namespace: default
 spec:
   containers:
-    image: infra.dt.vmw.run/apps/ingress-test:0.0
+  - image: infra.dt.vmw.run/apps/ingress-test:0.0
     imagePullPolicy: Always
     name: ingresstest-container
     ports:
