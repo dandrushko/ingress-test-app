@@ -5,10 +5,9 @@ metadata:
   annotations:
   labels:
     app: ingress-test
+    name: ingress-test
   name: ingress-test
-  namespace: default
 spec:
-  internalTrafficPolicy: Cluster
   ipFamilies:
   - IPv4
   ipFamilyPolicy: SingleStack
@@ -17,9 +16,10 @@ spec:
     port: 5000
     protocol: TCP
     targetPort: 5000
+    nodePort: 31000
   selector:
     app: ingress-test
-  type: ClusterIP
+  type: NodePort
 ---
 apiVersion: v1
 kind: Pod
@@ -28,7 +28,6 @@ metadata:
   labels:
     app: ingress-test
   name: ingresstest-pod
-  namespace: default
 spec:
   containers:
   - image: infra.dt.vmw.run/apps/ingress-test:0.0
@@ -43,18 +42,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    ingress.kubernetes.io/protocol: http
-    kubernetes.io/ingress.class: contour
   labels:
     app: ingress-test
-  name: gw-ingress-gateway
+  name: ingress-test
 spec:
+  ingressClassName: "contour"
   rules:
   - http:
       paths:
       - backend:
           service:
-            name: gwsvc
+            name: ingress-test
             port:
               number: 5000
         path: /
